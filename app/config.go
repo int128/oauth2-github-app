@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/jws"
 )
 
 // Config represents a config of GitHub App Installation
@@ -47,7 +46,7 @@ func (r tokenRefresher) Token() (*oauth2.Token, error) {
 //
 // See https://docs.github.com/en/developers/apps/authenticating-with-github-apps#authenticating-as-a-github-app
 func (c Config) Token(ctx context.Context) (*oauth2.Token, error) {
-	appJWT, err := c.generateAppJWT()
+	appJWT, err := newAppJWT(c.AppID, c.PrivateKey)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate a jwt: %w", err)
 	}
@@ -60,20 +59,6 @@ func (c Config) Token(ctx context.Context) (*oauth2.Token, error) {
 		Expiry:      resp.ExpiresAt,
 		TokenType:   "token",
 	}, nil
-}
-
-func (c Config) generateAppJWT() (string, error) {
-	header := jws.Header{Algorithm: "RS256", Typ: "JWT"}
-	claims := jws.ClaimSet{
-		Iat: time.Now().Unix(),
-		Exp: time.Now().Add(3 * time.Minute).Unix(),
-		Iss: c.AppID,
-	}
-	encoded, err := jws.Encode(&header, &claims, c.PrivateKey)
-	if err != nil {
-		return "", fmt.Errorf("jws encode error: %w", err)
-	}
-	return encoded, nil
 }
 
 type tokenResponse struct {
