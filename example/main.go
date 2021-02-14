@@ -11,19 +11,12 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func run(ctx context.Context) error {
-	appID := os.Getenv("GITHUB_APP_ID")
-	installationID := os.Getenv("GITHUB_APP_INSTALLATION_ID")
-	privateKeyName := os.Getenv("GITHUB_APP_PRIVATE_KEY_NAME")
-	if appID == "" || installationID == "" || privateKeyName == "" {
-		return fmt.Errorf("you need to set GITHUB_APP_ID, GITHUB_APP_INSTALLATION_ID and GITHUB_APP_PRIVATE_KEY_NAME")
-	}
+func run(ctx context.Context, appID, installationID, privateKeyName string) error {
+	// create an oauth2 client
 	privateKey, err := app.LoadPrivateKey(privateKeyName)
 	if err != nil {
 		return fmt.Errorf("could not load the private key: %w", err)
 	}
-
-	// create an oauth2 client
 	cfg := app.Config{
 		PrivateKey:     privateKey,
 		AppID:          appID,
@@ -46,7 +39,14 @@ func run(ctx context.Context) error {
 }
 
 func main() {
-	if err := run(context.Background()); err != nil {
+	ctx := context.Background()
+	appID := os.Getenv("GITHUB_APP_ID")
+	installationID := os.Getenv("GITHUB_APP_INSTALLATION_ID")
+	privateKeyName := os.Getenv("GITHUB_APP_PRIVATE_KEY_NAME")
+	if appID == "" || installationID == "" || privateKeyName == "" {
+		log.Fatalf("you need to set GITHUB_APP_ID, GITHUB_APP_INSTALLATION_ID and GITHUB_APP_PRIVATE_KEY_NAME")
+	}
+	if err := run(ctx, appID, installationID, privateKeyName); err != nil {
 		log.Fatalf("error: %s", err)
 	}
 }
