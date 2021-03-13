@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 
@@ -24,22 +26,44 @@ func run(ctx context.Context, appID, installationID, privateKeyName string) erro
 	}
 	client := oauth2.NewClient(ctx, cfg.TokenSource(ctx))
 
+	// prepare a query
+	var q struct {
+		Query string `json:"query"`
+	}
+	q.Query = `
+		query {
+			viewer {
+				login
+			}
+		}`
+	reqBody, err := json.Marshal(&q)
+	if err != nil {
+		return fmt.Errorf("json marshal error: %w", err)
+	}
+
 	// call an endpoint
-	resp, err := client.Get("https://api.github.com/rate_limit")
+	resp, err := client.Post("https://api.github.com/graphql", "application/json", bytes.NewReader(reqBody))
 	if err != nil {
 		return fmt.Errorf("http error: %w", err)
 	}
 	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	log.Println(resp.Status)
+	for k, vs := range resp.Header {
+		for _, v := range vs {
+			log.Printf("%s: %s", k, v)
+		}
+	}
+	log.Println()
+	if _, err := io.Copy(os.Stdout, resp.Body); err != nil {
 		return fmt.Errorf("read body error: %s", err)
 	}
-	log.Printf("response: status %d body %s", resp.StatusCode, string(b))
 	return nil
 }
 
 func main() {
+	log.SetFlags(0)
 	ctx := context.Background()
+
 	appID := os.Getenv("GITHUB_APP_ID")
 	installationID := os.Getenv("GITHUB_APP_INSTALLATION_ID")
 	privateKeyName := os.Getenv("GITHUB_APP_PRIVATE_KEY_NAME")
