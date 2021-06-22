@@ -2,4 +2,4 @@ module github.com/int128/oauth2-github-app
 
 go 1.15
 
-require golang.org/x/oauth2 v0.0.0-20210615190721-d04028783cf1
+require golang.org/x/oauth2 v0.0.0-20210622165204-14747e66f690
