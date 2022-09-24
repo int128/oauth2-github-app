@@ -1,8 +1,8 @@
-// Package app provides an OAuth 2.0 client for GitHub App.
+// Package oauth2githubapp provides an OAuth 2.0 client for GitHub App.
 //
 // This package implements the authentication method described in
 // https://docs.github.com/en/developers/apps/authenticating-with-github-apps
-package app
+package oauth2githubapp
 
 import (
 	"context"

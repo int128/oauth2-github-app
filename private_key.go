@@ -1,4 +1,4 @@
-package app
+package oauth2githubapp
 
 import (
 	"crypto/rsa"
