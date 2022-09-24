@@ -9,7 +9,7 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -86,7 +86,7 @@ func (c Config) createInstallationAccessToken(ctx context.Context, appJWT string
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		b, err := ioutil.ReadAll(resp.Body)
+		b, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return nil, fmt.Errorf("http status %d, body error: %w", resp.StatusCode, err)
 		}
