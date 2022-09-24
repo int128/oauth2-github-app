@@ -34,21 +34,23 @@ Finally you will get the following items:
 To create a http client with authentication:
 
 ```go
+package main
+
 import (
 	"context"
 	"fmt"
 
-	"github.com/int128/oauth2-github-app/app"
+	"github.com/int128/oauth2-github-app"
 	"golang.org/x/oauth2"
 )
 
 func run(ctx context.Context, appID, installationID, privateKeyName string) error {
 	// create an http client
-	privateKey, err := app.LoadPrivateKey(privateKeyName)
+	privateKey, err := oauth2githubapp.LoadPrivateKey(privateKeyName)
 	if err != nil {
 		return fmt.Errorf("could not load the private key: %w", err)
 	}
-	cfg := app.Config{
+	cfg := oauth2githubapp.Config{
 		PrivateKey:     privateKey,
 		AppID:          appID,
 		InstallationID: installationID,
