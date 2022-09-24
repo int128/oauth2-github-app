@@ -5,12 +5,12 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 // LoadPrivateKey reads the private key file of GitHub App
 func LoadPrivateKey(name string) (*rsa.PrivateKey, error) {
-	b, err := ioutil.ReadFile(name)
+	b, err := os.ReadFile(name)
 	if err != nil {
 		return nil, fmt.Errorf("could not read file: %w", err)
 	}
