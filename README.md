@@ -64,6 +64,19 @@ For [`github.com/shurcooL/githubv4`](https://github.com/shurcooL/githubv4) packa
 
 See also [example](example/main.go).
 
+## GitHub Enterprise
+
+To set your GitHub Enterprise server,
+
+```go
+	cfg := oauth2githubapp.Config{
+		PrivateKey:     privateKey,
+		AppID:          appID,
+		InstallationID: installationID,
+		BaseURL:        "https://api.github.example.com",
+	}
+	client := oauth2.NewClient(ctx, cfg.TokenSource(ctx))
+```
 
 ## Contribution
 

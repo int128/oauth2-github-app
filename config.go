@@ -12,16 +12,24 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
 )
+
+const defaultBaseURL = "https://api.github.com"
 
 // Config represents a config of GitHub App Installation
 type Config struct {
 	PrivateKey     *rsa.PrivateKey
 	AppID          string
 	InstallationID string
+
+	// BaseURL is an endpoint of GitHub API.
+	// Any trailing slash is trimmed.
+	// If not set, it defaults to https://api.github.com
+	BaseURL string
 }
 
 // TokenSource returns an oauth2.TokenSource for GitHub App Installation
@@ -66,9 +74,13 @@ type tokenResponse struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
-// https://docs.github.com/en/rest/reference/apps#create-an-installation-access-token-for-an-app
+// https://docs.github.com/en/rest/apps/apps?apiVersion=2022-11-28#create-an-installation-access-token-for-an-app
 func (c Config) createInstallationAccessToken(ctx context.Context, appJWT string) (*tokenResponse, error) {
-	tokenEndpoint := fmt.Sprintf("https://api.github.com/app/installations/%s/access_tokens", url.PathEscape(c.InstallationID))
+	baseURL := strings.TrimRight(c.BaseURL, "/")
+	if baseURL == "" {
+		baseURL = defaultBaseURL
+	}
+	tokenEndpoint := fmt.Sprintf("%s/app/installations/%s/access_tokens", baseURL, url.PathEscape(c.InstallationID))
 	req, err := http.NewRequestWithContext(ctx, "POST", tokenEndpoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("invalid request: %w", err)
