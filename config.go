@@ -27,7 +27,7 @@ type Config struct {
 	InstallationID string
 
 	// BaseURL is an endpoint of GitHub API.
-	// Trailing slash is trimmed.
+	// Any trailing slash is trimmed.
 	// If not set, it defaults to https://api.github.com
 	BaseURL string
 }
