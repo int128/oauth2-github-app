@@ -26,6 +26,8 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
+        env:
+          GOTOOLCHAIN: local
       - run: make test
       - run: echo "$APP_PRIVATE_KEY" > /tmp/APP_PRIVATE_KEY.pem
         env:
@@ -56,5 +58,7 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
+        env:
+          GOTOOLCHAIN: local
       - run: go mod tidy
       - uses: int128/update-generated-files-action@757376506709ed3d87f14a80ca28a98736d52236 # v2.55.0
