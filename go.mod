@@ -2,6 +2,6 @@ module github.com/int128/oauth2-github-app
 
 go 1.16
 
-toolchain go1.23.3
+toolchain go1.23.4
 
 require golang.org/x/oauth2 v0.24.0
