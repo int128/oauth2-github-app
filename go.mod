@@ -4,4 +4,4 @@ go 1.16
 
 toolchain go1.23.6
 
-require golang.org/x/oauth2 v0.25.0
+require golang.org/x/oauth2 v0.26.0
