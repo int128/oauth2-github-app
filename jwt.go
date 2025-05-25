@@ -54,7 +54,7 @@ func encodeRS256(h headerType, c claimsType, key *rsa.PrivateKey) (string, error
 	return header + "." + payload + "." + sig, nil
 }
 
-func encodeBase64JSON(v interface{}) (string, error) {
+func encodeBase64JSON(v any) (string, error) {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return "", fmt.Errorf("marshal error: %w", err)
