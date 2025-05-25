@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/int128/oauth2-github-app"
+	oauth2githubapp "github.com/int128/oauth2-github-app"
 	"golang.org/x/oauth2"
 )
 
@@ -46,7 +46,9 @@ func run(ctx context.Context, appID, installationID, privateKeyName string) erro
 	if err != nil {
 		return fmt.Errorf("http error: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	log.Println(resp.Status)
 	for k, vs := range resp.Header {
 		for _, v := range vs {
