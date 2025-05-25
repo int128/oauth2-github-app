@@ -96,7 +96,9 @@ func (c Config) createInstallationAccessToken(ctx context.Context, appJWT string
 	if err != nil {
 		return nil, fmt.Errorf("http error: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		b, err := io.ReadAll(resp.Body)
 		if err != nil {
